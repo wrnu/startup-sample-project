@@ -4,10 +4,38 @@ on:
   push:
     branches: [dev, test, main]
     tags: ['*']
+  pull_request:
+    branches: [dev, test, main]
 jobs:
+  test:
+    name: Build and Push to GHCR
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - 
+        name: Check out the repo
+        uses: actions/checkout@v2
+      - 
+        name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - 
+        name: install dependencies
+        run: npm install
+        working-directory: server
+
+      - 
+        name: run server tests
+        run: npm run test
+        working-directory: server
+          
   push_to_registry:
     name: Build and Push to GHCR
     runs-on: ubuntu-20.04
+    if: github.event_name != 'pull_request'
     steps:
       - 
         name: Check out the repo

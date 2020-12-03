@@ -10,7 +10,7 @@ It's essentially a fancier "Hello World" app. This demo app is current WIP and n
 
 ## Introduction
 
-Welcome to your new project. This is a basic starter project with a NodeJS app connected to a database for you to modify and expand to fit your needs. It provides scripts for developing and running locally, as well as "Infrastructure-as-Code" using Terraform to allow the app to be easily deployed to public cloud environments. Currently, AWS is supported, but support for other cloud targets may be added in the future.
+Welcome to your new project. This is a basic starter project with a NodeJS app connected to a database for you to modify and expand to fit your needs. It provides scripts for developing and running locally.
 
 ## Prerequisites
 
@@ -19,12 +19,6 @@ In order to develop or run the app locally, you will need:
 - a `bash`-like terminal environment; testing has primarily been done using MacOS Catalina, Ubuntu Linux, and Windows 10 (WSL2)
 - `make`
 - `Docker`
-
-In order to deploy to AWS, you will also need:
-
-- `terraform` 12 or newer
-- the AWS CLI (on MacOS Catalina, `brew install awscli`)
-- access to an AWS account and mechanism to get temporary (STS) credentials
 
 ## Setup
 
@@ -69,6 +63,10 @@ make vscode-copy-config
 # open the project in vscode
 make vscode
 ```
+
+## Deploying to AWS
+
+To deploy to an AWS workload account see the [startup-sample-project-infrastructure](https://github.com/bcgov/startup-sample-project-infrastructure) repository.
 
 ## License
 

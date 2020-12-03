@@ -1,12 +1,12 @@
 ---
-name: Build and Push Docker Image
+name: CI
 on:
   push:
     branches: [dev, test, main]
     tags: ['*']
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Build and Push Docker image to GHCR
     runs-on: ubuntu-latest
     steps:
       - 
@@ -16,7 +16,7 @@ jobs:
         name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${{ github.repository }}
+          DOCKER_IMAGE=ghcr.io/${{ github.repository }}
           VERSION=${GITHUB_REF#refs/heads/}
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}

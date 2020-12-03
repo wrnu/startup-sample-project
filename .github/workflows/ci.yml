@@ -6,36 +6,10 @@ on:
     tags: ['*']
   pull_request:
     branches: [dev, test, main]
-jobs:
-  test:
-    name: Build and Push to GHCR
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - 
-        name: Check out the repo
-        uses: actions/checkout@v2
-      - 
-        name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - 
-        name: install dependencies
-        run: npm install
-        working-directory: server
-
-      - 
-        name: run server tests
-        run: npm run test
-        working-directory: server
-          
+jobs:       
   push_to_registry:
-    name: Build and Push to GHCR
+    name: Build, Test and Push to GHCR
     runs-on: ubuntu-20.04
-    if: github.event_name != 'pull_request'
     steps:
       - 
         name: Check out the repo
@@ -73,13 +47,23 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - 
+        name: Test
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./Dockerfile
+          target: test
+      - 
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           context: .
           file: ./Dockerfile
-          push: true
+          target: runtime
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}

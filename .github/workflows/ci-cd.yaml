@@ -13,9 +13,10 @@ env:
   TF_SRC_PATH: "terraform/aws"
 
 jobs:
-  push_to_registry:
+  main:
     name: main
     runs-on: ubuntu-20.04
+    
     steps:
 
       - name: Check out the repo
@@ -89,13 +90,33 @@ jobs:
 
       - name: Terraform fmt
         id: fmt
-        run: terraform fmt -check ${{ env.TF_SRC_PATH }}
+        run: terraform fmt -check -no-color ${{ env.TF_SRC_PATH }}
 
       - name: Terraform Init
         id: init
         env:
           TF_WORKSPACE: ${{ steps.prep.outputs.tf_workspace }}
-        run: terraform init ${{ env.TF_SRC_PATH }}
+        run: terraform init -no-color ${{ env.TF_SRC_PATH }}
+
+      - name: Reviewdog TFLint
+        uses: reviewdog/action-tflint@master
+        if: github.event_name == 'pull_request'
+        with:
+          github_token: ${{ secrets.github_token }}
+          working_directory: ${{ env.TF_SRC_PATH }}
+          reporter: github-pr-review
+          filter_mode: added
+          level: warning
+
+      - name: Reviewdog TFSEC
+        uses: reviewdog/action-tfsec@master
+        if: github.event_name == 'pull_request'
+        with:
+          github_token: ${{ secrets.github_token }}
+          working_directory: ${{ env.TF_SRC_PATH }}
+          reporter: github-pr-review
+          filter_mode: added
+          level: warning
 
       - name: Terraform Plan
         id: plan
@@ -111,7 +132,6 @@ jobs:
         uses: actions/github-script@v3
         if: github.event_name == 'pull_request'
         env:
-          PLAN: "${{ steps.plan.outputs.stdout }}"
           SUCCESS: '\u2705'
           FAILURE: '\u274C'
         with:
@@ -121,12 +141,31 @@ jobs:
             const init = `${{ steps.init.outcome }}` == 'success' ? `${{ env.SUCCESS }}` : `${{ env.FAILURE }}`;
             const plan =  `${{ steps.plan.outcome }}` == 'success' ? `${{ env.SUCCESS }}` : `${{ env.FAILURE }}`;
             const output = `#### Terraform Format and Style: ${fmt}
-            #### Terraform Initialization: ${init}
-            #### Terraform Plan: ${plan}
-            <details><summary>Show Plan</summary>
+            
+            <details><summary>Show</summary>
 
             \`\`\`terraform
-            ${process.env.PLAN}
+            ${{ steps.fmt.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Initialization: ${init}
+
+            <details><summary>Show</summary>
+
+            \`\`\`terraform
+            ${{ steps.init.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Plan: ${plan}
+
+            <details><summary>Show</summary>
+
+            \`\`\`terraform
+            ${{ steps.plan.outputs.stdout }}
             \`\`\`
 
             </details>
@@ -141,7 +180,7 @@ jobs:
             })
 
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.tflint.outcome == 'failure' || steps.plan.outcome == 'failure'
         run: exit 1
       
       - name: Terraform Apply

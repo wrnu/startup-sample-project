@@ -5,7 +5,7 @@ const Summary = () => {
   return (
     <Fragment>
       <Typography variant="h2" color="primary" gutterBottom>
-        Simple Demo App - Now with 100% more DevOps!!
+        Simple Demo App - Now with 100% more DevOps!
       </Typography>
       <Typography variant="body1" paragraph>
         In order to get you started in your journey, we've provided you a small demonstration app.

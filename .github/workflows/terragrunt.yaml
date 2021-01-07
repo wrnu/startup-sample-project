@@ -2,10 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [dev, test]
-    # tags: ['*']
+    branches: [terragrunt]
   pull_request:
-    branches: [dev, test]
+    branches: [terragrunt]
 
 env:
   REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}

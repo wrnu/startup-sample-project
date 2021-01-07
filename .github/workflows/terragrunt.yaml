@@ -35,7 +35,7 @@ jobs:
             BASE_REF=${{ github.event.pull_request.base.ref }}
             BRANCH=${BASE_REF#refs/heads/}
           fi
-          TF_WORKSPACE=$([ "$BRANCH" = "main" ] && echo prod || echo ${BRANCH})
+          TF_WORKSPACE=$([ "$BRANCH" = "terragrunt" ] && echo dev || echo ${BRANCH})
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
             TF_WORKSPACE=prod

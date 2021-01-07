@@ -1,4 +1,4 @@
-name: CI/CD
+name: Terragrunt
 
 on:
   push:
@@ -12,6 +12,7 @@ env:
   REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
   IMAGE: ${{ secrets.CONTAINER_IMAGE }}
   TF_VERSION: 0.13.5
+  TG_VERSION: 0.26.7
   TG_SRC_PATH: terragrunt
 
 jobs:
@@ -91,7 +92,7 @@ jobs:
 
       - uses: peter-murray/terragrunt-github-action@v1.0.0
         with:
-          terragrunt_version: 0.26.7
+          terragrunt_version: ${{ env.TG_VERSION }}
 
       - name: Terraform Credentials
         run: |

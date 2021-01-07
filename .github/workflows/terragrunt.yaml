@@ -93,6 +93,14 @@ jobs:
         with:
           terragrunt_version: 0.26.7
 
+      - name: Terraform Credentials
+        run: |
+          cat <<EOF >> ~/.terraformrc
+          credentials "app.terraform.io" {
+            token = "${{ secrets.TFC_TEAM_TOKEN }}"
+          }
+          EOF
+
       - name: Terragrunt Validate
         id: tg_validate
         working-directory: ${{ env.TG_SRC_PATH }}/${{ steps.prep.outputs.tf_workspace }}

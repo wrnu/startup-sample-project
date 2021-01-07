@@ -5,6 +5,11 @@ terraform {
     commands = ["plan"]
     execute  = ["python3", "${get_parent_terragrunt_dir()}/test.py"]
   }
+
+  before_hook "bash" {
+    commands = ["plan"]
+    execute  = ["bash", "${get_parent_terragrunt_dir()}/test.sh"]
+  }
 }
 
 locals {

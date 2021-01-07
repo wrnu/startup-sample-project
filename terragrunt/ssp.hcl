@@ -1,5 +1,5 @@
 terraform {
-  source = "${path_relative_from_include()}/../terraform/aws"
+  source = "${path_relative_from_include()}/../terraform/aws//."
 
   before_hook "python" {
     commands = ["plan"]

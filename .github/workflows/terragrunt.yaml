@@ -101,14 +101,6 @@ jobs:
           }
           EOF
 
-      - name: Terragrunt Validate
-        id: tg_validate
-        # if: github.event_name == 'pull_request'
-        working-directory: ${{ env.TG_SRC_PATH }}/${{ steps.prep.outputs.tf_workspace }}
-        env:
-          client_app_image_${{ steps.prep.outputs.tf_workspace }}: ${{ steps.prep.outputs.tag }}
-        run: terragrunt validate-all
-
       - name: Terragrunt Plan
         id: tg_plan
         # if: github.event_name == 'pull_request'

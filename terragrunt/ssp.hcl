@@ -5,12 +5,6 @@ terraform {
     commands = ["terragrunt-read-config"]
     execute  = ["python3", "${get_parent_terragrunt_dir()}/test.py"]
   }
-
-  before_hook "re-init" {
-    commands = ["apply", "plan"]
-    execute  = ["terraform", "init"]
-
-  }
 }
 
 locals {

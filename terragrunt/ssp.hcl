@@ -1,8 +1,8 @@
 terraform {
   source = "${path_relative_from_include()}/../terraform/aws"
 
-  after_hook "gen" {
-    commands = ["terragrunt-read-config"]
+  before_hook "python" {
+    commands = ["plan"]
     execute  = ["python3", "${get_parent_terragrunt_dir()}/test.py"]
   }
 }

@@ -94,14 +94,6 @@ jobs:
         with:
           terragrunt_version: ${{ env.TG_VERSION }}
 
-      - name: Terraform Credentials
-        run: |
-          cat <<EOF >> ~/.terraformrc
-          credentials "app.terraform.io" {
-            token = "${{ secrets.TFC_TEAM_TOKEN }}"
-          }
-          EOF
-
       - name: Terragrunt Plan
         id: tg_plan
         # if: github.event_name == 'pull_request'

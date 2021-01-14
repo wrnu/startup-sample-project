@@ -106,9 +106,12 @@ jobs:
         run: terragrunt plan-all | tee /tmp/tg_plan
         continue-on-error: true
 
-      - id: plan
+      - name: Get Terraform Plan Output
+        id: plan
         if: github.event_name == 'pull_request'
-        run: cat /tmp/tg_plan
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: /tmp/tg_plan
 
       - name: Update Pull Request
         uses: actions/github-script@v3
@@ -127,7 +130,7 @@ jobs:
             <summary>Show</summary>
 
             \`\`\`terraform
-            ${{ steps.plan.outputs.stdout }}
+            ${{ steps.plan.outputs.content }}
             \`\`\`
 
             </details>

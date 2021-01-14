@@ -29,8 +29,8 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          TAG=${{ github.event.workflow_run.sha }}
-          REF=${{ github.event.workflow_run.ref }}
+          TAG=${{ github.event.workflow_run.head_sha }}
+          REF=${{ github.event.workflow_run.head_branch}}
           TF_WORKSPACE=${{ env.TFC_DEFAULT_WORKSPACE }}
           if [[ $REF == refs/tags/v* ]]; then
             TAG=${REF#refs/tags/v}

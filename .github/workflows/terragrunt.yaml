@@ -13,7 +13,7 @@ env:
   IMAGE: ${{ secrets.CONTAINER_IMAGE }}
   TF_VERSION: 0.13.5
   TG_VERSION: 0.26.7
-  TG_SRC_PATH: terragrunt
+  TG_SRC_PATH: terraform
 
 jobs:
   main:
@@ -98,5 +98,5 @@ jobs:
         id: tg_plan
         working-directory: ${{ env.TG_SRC_PATH }}/${{ steps.prep.outputs.tf_workspace }}
         env:
-          client_app_image_${{ steps.prep.outputs.tf_workspace }}: ${{ steps.prep.outputs.tag }}
+          client_app_image: ${{ steps.prep.outputs.tag }}
         run: terragrunt plan-all

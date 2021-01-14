@@ -115,10 +115,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const plan =  `${{ steps.plan.outcome }}` == 'success' ? `${{ env.SUCCESS }}` : `${{ env.FAILURE }}`;
-            
-            #### Terraform Plan: ${plan}
+            const output = `#### Terraform Plan: ${plan}
 
-            <details><summary>Show</summary>
+            <details>
+            <summary>Show</summary>
 
             \`\`\`terraform
             ${{ steps.plan.outputs.stdout }}
@@ -135,7 +135,7 @@ jobs:
               body: output
             })
 
-      - name: Terraform Plan Status
+      - name: Terragrunt Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
